@@ -6,12 +6,15 @@ import { GET_DB } from '~/config/mongodb'
 
 const BOARD_COLLECTION_NAME = 'blogs'
 const BOARD_COLLECTION_SCHEMA = Joi.object({
-  title: Joi.string().required().min(3).max(50).trim().strict(),
-  slug: Joi.string().required().min(3).trim().strict(),
-  // type: Joi.string().valid('public', 'private').required(),
+  title: Joi.string().required().min(3).trim().strict(),
+  time: Joi.string().required().min(3).trim().strict(),
+  description: Joi.string().required().min(3).trim().strict(),
+  note:Joi.string().required().min(3).trim().strict(),
   imgList: Joi.array().items(
     Joi.string()
-  ).default([]),
+  ),
+  slug: Joi.string().required().min(3).trim().strict(),
+  // type: Joi.string().valid('public', 'private').required(),
   // description: Joi.string().required().min(3).max(50).trim().strict(),
 
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
