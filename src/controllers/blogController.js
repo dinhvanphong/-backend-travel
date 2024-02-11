@@ -13,6 +13,38 @@ const createNew =async (req, res, next) => {
   }
 }
 
+const getListBlog =async (req, res, next) => {
+  try {
+    // console.log('body', req.body)
+    const getListBlog = await blogService.getListBlog()
+    res.status(StatusCodes.OK).json(getListBlog)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getDetail =async (req, res, next) => {
+  try {
+    // console.log('body', req.body)
+    const blogDetail = await blogService.getDetail(req.params.id)
+    res.status(StatusCodes.OK).json(blogDetail)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const update =async (req, res, next) => {
+  try {
+    // console.log('body', req.body)
+    const blogUpdated = await blogService.update(req.params.id, req.body)
+    res.status(StatusCodes.OK).json(blogUpdated)
+  } catch (error) {
+    next(error)
+  }
+}
 export const blogController = {
-  createNew
+  createNew,
+  getListBlog,
+  getDetail,
+  update
 }

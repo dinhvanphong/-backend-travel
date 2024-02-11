@@ -4,8 +4,8 @@ import { GET_DB } from '~/config/mongodb'
 // import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
 
-const BOARD_COLLECTION_NAME = 'blogs'
-const BOARD_COLLECTION_SCHEMA = Joi.object({
+const BLOG_COLLECTION_NAME = 'blogs'
+const BLOG_COLLECTION_SCHEMA = Joi.object({
   title: Joi.string().required().min(3).trim().strict(),
   time: Joi.string().required().min(3).trim().strict(),
   description: Joi.string().required().min(3).trim().strict(),
@@ -23,16 +23,16 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
 
 })
 
-// const INVALID_UPDATE_FIELDS = ['_id', 'createdAt']
+const INVALID_UPDATE_FIELDS = ['_id', 'createdAt']
 
 const validateBeforeCreate = async (data) => {
-  return await BOARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
+  return await BLOG_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
 }
 
 const createNew = async (data) => {
   try {
     const validData = await validateBeforeCreate(data)
-    const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(validData)
+    const createdBoard = await GET_DB().collection(BLOG_COLLECTION_NAME).insertOne(validData)
     return createdBoard
   } catch (error) {
     throw new Error(error)
@@ -41,7 +41,7 @@ const createNew = async (data) => {
 
 const findOneById = async (id) => {
   try {
-    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({
+    const result = await GET_DB().collection(BLOG_COLLECTION_NAME).findOne({
       _id: new ObjectId(id)
     })
     return result
@@ -50,9 +50,58 @@ const findOneById = async (id) => {
   }
 }
 
+const getListBlog = async () => {
+  try {
+    const listBlog = await GET_DB().collection(BLOG_COLLECTION_NAME).aggregate([
+      { $match: {
+        _destroy: false
+      } }
+    ]).toArray()
+    return listBlog
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const getDetail = async (id) => {
+  try {
+    const blogDetail = await GET_DB().collection(BLOG_COLLECTION_NAME).aggregate([
+      { $match: {
+        _id: new ObjectId(id),
+        _destroy: false
+      } }
+    ]).toArray()
+    return blogDetail[0] || null
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const update = async (id, updateData) => {
+  try {
+    Object.keys(updateData).forEach(key => {
+      if (INVALID_UPDATE_FIELDS.includes(key)) {
+        delete updateData[key]
+      }
+    })
+
+    const result = await GET_DB().collection(BLOG_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: updateData },
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const blogModel = {
-  BOARD_COLLECTION_NAME,
-  BOARD_COLLECTION_SCHEMA,
+  BLOG_COLLECTION_NAME,
+  BLOG_COLLECTION_SCHEMA,
   createNew,
-  findOneById
+  findOneById,
+  getListBlog,
+  getDetail,
+  update
 }

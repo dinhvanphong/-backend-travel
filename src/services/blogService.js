@@ -16,6 +16,38 @@ const newCreate =async (reqBody) => {
 
 }
 
+const getListBlog =async () => {
+  try {
+    const listBlog= await blogModel.getListBlog()
+    return listBlog
+  } catch (error) { throw error }
+
+}
+
+const getDetail =async (id) => {
+  try {
+    const blogDetail= await blogModel.getDetail(id)
+    return blogDetail
+  } catch (error) { throw error }
+
+}
+
+const update =async (id, reqBody) => {
+  try {
+    const updateData = {
+      ...reqBody,
+      slug: slugify(reqBody.title),
+      updateAt: Date.now()
+    }
+    const blogUpdated= await blogModel.update(id, updateData)
+    return blogUpdated
+  } catch (error) { throw error }
+
+}
+
 export const blogService = {
-  newCreate
+  newCreate,
+  getListBlog,
+  getDetail,
+  update
 }

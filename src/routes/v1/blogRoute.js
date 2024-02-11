@@ -6,9 +6,10 @@ import { blogController } from '~/controllers/blogController'
 const Router = express.Router()
 
 Router.route('/')
-  .get((req, res) => {
-    res.status(StatusCodes.OK).json( { message: 'API get list blog' } )
-  })
+  .get(blogController.getListBlog)
   .post(blogValidation.createNew, blogController.createNew)
+Router.route('/:id')
+  .get(blogController.getDetail)
+  .put(blogValidation.update, blogController.update)
 
 export const blogRoute = Router
