@@ -2,6 +2,7 @@
 import express from 'express'
 import { StatusCodes } from 'http-status-codes'
 import { blogRoute } from '~/routes/v1/blogRoute'
+import { authRoute } from '~/routes/v1/authRoute'
 const Router = express.Router()
 
 Router.get('/status', (req, res) => {
@@ -10,6 +11,7 @@ Router.get('/status', (req, res) => {
 })
 
 Router.use('/blogs', blogRoute)
+Router.use('/auth', authRoute)
 
 
 export const APIs_V1 = Router
