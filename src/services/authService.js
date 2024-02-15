@@ -21,7 +21,26 @@ const login =async (res, reqBody) => {
 
 }
 
+const requestRefreshToken =async (req, res) => {
+  try {
+    const tokens= await authModel.requestRefreshToken(req, res)
+    // const getNewUser = await authModel.findOneById(createdUser.insertedId)
+    return tokens
+  } catch (error) { throw error }
+
+}
+
+const logout =async (req, res) => {
+  try {
+    const logout= await authModel.logout(req, res)
+    // const getNewUser = await authModel.findOneById(createdUser.insertedId)
+    return logout
+  } catch (error) { throw error }
+
+}
 export const authService = {
   createNew,
-  login
+  login,
+  requestRefreshToken,
+  logout
 }

@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 // import { corsOptions } from '~/config/cors'
 import exitHook from 'async-exit-hook'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
@@ -11,6 +12,7 @@ const START_SERVER = () => {
   const app = express()
   // app.use(cors(corsOptions))
   app.use(cors())
+  app.use(cookieParser())
   app.use(express.json())
   app.use('/v1', APIs_V1)
 
