@@ -12,9 +12,9 @@ const createNew =async (reqBody) => {
 }
 
 
-const login =async (reqBody) => {
+const login =async (res, reqBody) => {
   try {
-    const loginUser= await authModel.login(reqBody)
+    const loginUser= await authModel.login(res, reqBody)
     // const getNewUser = await authModel.findOneById(createdUser.insertedId)
     return loginUser
   } catch (error) { throw error }

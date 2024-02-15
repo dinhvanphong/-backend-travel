@@ -17,7 +17,7 @@ const createNew =async (req, res, next) => {
 const login =async (req, res, next) => {
   try {
     // console.log('body', req.body)
-    const loginUser = await authService.login(req.body)
+    const loginUser = await authService.login(res, req.body)
     res.status(StatusCodes.CREATED).json(loginUser)
   } catch (error) {
     next(error)

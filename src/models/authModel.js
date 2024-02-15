@@ -1,8 +1,10 @@
 import Joi from 'joi'
 import { ObjectId } from 'mongodb'
 import { GET_DB } from '~/config/mongodb'
+import jwt from 'jsonwebtoken'
+import { env } from '~/config/environment'
 // import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
-
+let refreshTokens = []
 
 const USER_COLLECTION_NAME = 'users'
 const USER_COLLECTION_SCHEMA = Joi.object({
@@ -44,14 +46,49 @@ const findOneById = async (id) => {
   }
 }
 
-const login = async (data) => {
+const generateAccessToken = (user) => {
+  return jwt.sign(
+    {
+      id: user.id,
+      isAdmin: user.isAdmin
+    },
+    env.JWT_ACCESS_KEY,
+    { expiresIn: '30s' }
+  )
+}
+
+const generateRefreshToken = (user) => {
+  return jwt.sign(
+    {
+      id: user.id,
+      isAdmin: user.isAdmin
+    },
+    env.JWT_REFRESH_KEY,
+    { expiresIn: '365d' }
+  )
+}
+
+const login = async (res, data) => {
   try {
     const user = await GET_DB().collection(USER_COLLECTION_NAME).findOne({
       username: data.username
     })
     const validPassword = data.password === user.password
     if (user && validPassword) {
-      return user
+      //Generate access token
+      const accessToken = generateAccessToken(user)
+      //Generate refresh token
+      const refreshToken = generateRefreshToken(user)
+      refreshTokens.push(refreshToken)
+      // STORE REFRESH TOKEN IN COOKIE
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure:false,
+        path: '/',
+        sameSite: 'strict'
+      })
+      const { password, ...others } = user
+      return res.status(200).json({ ...others, accessToken, refreshToken })
     }
     return validPassword
   } catch (error) {
