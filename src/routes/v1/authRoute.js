@@ -13,7 +13,9 @@ Router.route('/login')
 Router.route('/refresh')
   .post(authController.requestRefreshToken)
 
+// Router.route('/logout')
+//   .post(verifyTokenController.verifyToken, authController.logout)
 Router.route('/logout')
-  .post(verifyTokenController.verifyToken, authController.logout)
+  .post(authController.logout)
 
 export const authRoute = Router

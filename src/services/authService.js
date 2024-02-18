@@ -1,4 +1,5 @@
-
+// import jwt from 'jsonwebtoken'
+// import { env } from '~/config/environment'
 import { authModel } from '~/models/authModel'
 
 
@@ -10,6 +11,28 @@ const createNew =async (reqBody) => {
   } catch (error) { throw error }
 
 }
+
+// const generateAccessToken = (user) => {
+//   return jwt.sign(
+//     {
+//       id: user.id,
+//       admin: user.admin
+//     },
+//     env.JWT_ACCESS_KEY,
+//     { expiresIn: '20s' }
+//   )
+// }
+
+// const generateRefreshToken = (user) => {
+//   return jwt.sign(
+//     {
+//       id: user.id,
+//       admin: user.admin
+//     },
+//     env.JWT_REFRESH_KEY,
+//     { expiresIn: '365d' }
+//   )
+// }
 
 
 const login =async (res, reqBody) => {

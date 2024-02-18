@@ -50,7 +50,7 @@ const generateAccessToken = (user) => {
   return jwt.sign(
     {
       id: user.id,
-      isAdmin: user.isAdmin
+      admin: user.admin
     },
     env.JWT_ACCESS_KEY,
     { expiresIn: '20s' }
@@ -61,7 +61,7 @@ const generateRefreshToken = (user) => {
   return jwt.sign(
     {
       id: user.id,
-      isAdmin: user.isAdmin
+      admin: user.admin
     },
     env.JWT_REFRESH_KEY,
     { expiresIn: '365d' }
@@ -73,7 +73,11 @@ const login = async (res, data) => {
     const user = await GET_DB().collection(USER_COLLECTION_NAME).findOne({
       username: data.username
     })
+
+    if (!user) return res.status(404).json('Wrong username')
     const validPassword = data.password === user.password
+    if (!validPassword) return res.status(404).json('Wrong password')
+
     if (user && validPassword) {
       //Generate access token
       const accessToken = generateAccessToken(user)
@@ -88,9 +92,8 @@ const login = async (res, data) => {
         sameSite: 'strict'
       })
       const { password, ...others } = user
-      return res.status(200).json({ ...others, accessToken, refreshToken })
+      return res.status(200).json({ ...others, accessToken })
     }
-    return validPassword
   } catch (error) {
     throw new Error(error)
   }
