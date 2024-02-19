@@ -1,8 +1,6 @@
 import Joi from 'joi'
 import { ObjectId } from 'mongodb'
 import { GET_DB } from '~/config/mongodb'
-import jwt from 'jsonwebtoken'
-import { env } from '~/config/environment'
 // import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 let refreshTokens = []
 
@@ -46,27 +44,6 @@ const findOneById = async (id) => {
   }
 }
 
-const generateAccessToken = (user) => {
-  return jwt.sign(
-    {
-      id: user.id,
-      admin: user.admin
-    },
-    env.JWT_ACCESS_KEY,
-    { expiresIn: '20s' }
-  )
-}
-
-const generateRefreshToken = (user) => {
-  return jwt.sign(
-    {
-      id: user.id,
-      admin: user.admin
-    },
-    env.JWT_REFRESH_KEY,
-    { expiresIn: '365d' }
-  )
-}
 
 const login = async (res, data) => {
   try {
@@ -75,64 +52,23 @@ const login = async (res, data) => {
     })
 
     if (!user) return res.status(404).json('Wrong username')
-    const validPassword = data.password === user.password
-    if (!validPassword) return res.status(404).json('Wrong password')
-
-    if (user && validPassword) {
-      //Generate access token
-      const accessToken = generateAccessToken(user)
-      //Generate refresh token
-      const refreshToken = generateRefreshToken(user)
-      refreshTokens.push(refreshToken)
-      // STORE REFRESH TOKEN IN COOKIE
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        secure:false,
-        path: '/',
-        sameSite: 'strict'
-      })
-      const { password, ...others } = user
-      return res.status(200).json({ ...others, accessToken })
-    }
+    return user
   } catch (error) {
     throw new Error(error)
   }
 }
 
-const requestRefreshToken = async (req, res) => {
-  //Take refresh token from user
-  const refreshToken = req.cookies.refreshToken
-  //Send error if token is not valid
-  if (!refreshToken) return res.status(401).json('You"re not authenticated')
-  if (!refreshTokens.includes(refreshToken)) {
-    return res.status(403).json('Refresh token is not valid')
+const loginUser = async (res, data) => {
+  try {
+    const user = await GET_DB().collection(USER_COLLECTION_NAME).findOne({
+      username: data.username
+    })
+
+    if (!user) return res.status(404).json('Wrong username')
+    return user
+  } catch (error) {
+    throw new Error(error)
   }
-  jwt.verify(refreshToken, env.JWT_REFRESH_KEY, (err, user) => {
-    if (err) {
-      console.log('err', err)
-    }
-    refreshTokens = refreshTokens.filter((token) => token !== refreshToken)
-
-    const newAccessToken = generateAccessToken(user)
-    const newRefreshToken = generateRefreshToken(user)
-    refreshTokens.push(newRefreshToken)
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure:false,
-      path: '/',
-      sameSite: 'strict'
-    })
-    return res.status(200).json({
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken
-    })
-  })
-}
-
-const logout = (req, res) => {
-  res.clearCookie('refreshToken')
-  refreshTokens = refreshTokens.filter((token) => token !== req.cookies.refreshToken)
-  res.status(200).json('Logged out successfully!')
 }
 
 export const authModel = {
@@ -141,6 +77,5 @@ export const authModel = {
   createNew,
   findOneById,
   login,
-  requestRefreshToken,
-  logout
+  loginUser
 }

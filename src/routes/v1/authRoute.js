@@ -10,6 +10,8 @@ Router.route('/register')
   .post(authValidation.createNew, authController.createNew)
 Router.route('/login')
   .post(authController.login)
+Router.route('/loginUser')
+  .post(authController.loginUser)
 Router.route('/refresh')
   .post(authController.requestRefreshToken)
 

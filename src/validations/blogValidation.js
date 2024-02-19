@@ -9,6 +9,7 @@ const createNew = async (req, res, next) => {
     time: Joi.string().required().min(3).trim().strict(),
     description: Joi.string().required().min(3).trim().strict(),
     note:Joi.string().required().min(3).trim().strict(),
+    zones: Joi.string().valid('Miền Bắc', 'Miền Trung', 'Miền Nam').required(),
     imgList: Joi.array().items(
       Joi.string()
     )

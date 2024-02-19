@@ -24,6 +24,16 @@ const login =async (req, res, next) => {
   }
 }
 
+const loginUser =async (req, res, next) => {
+  try {
+    // console.log('body', req.body)
+    const loginUser = await authService.loginUser(res, req.body)
+    res.status(StatusCodes.CREATED).json(loginUser)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const requestRefreshToken =async (req, res, next) => {
   try {
     const tokens = await authService.requestRefreshToken(req, res)
@@ -46,5 +56,6 @@ export const authController = {
   createNew,
   login,
   requestRefreshToken,
-  logout
+  logout,
+  loginUser
 }
