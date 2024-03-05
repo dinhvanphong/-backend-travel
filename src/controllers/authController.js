@@ -52,10 +52,20 @@ const logout =async (req, res, next) => {
   }
 }
 
+const logoutUser =async (req, res, next) => {
+  try {
+    const logout = await authService.logoutUser(req, res)
+    res.status(StatusCodes.OK).json(logout)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const authController = {
   createNew,
   login,
   requestRefreshToken,
   logout,
-  loginUser
+  loginUser,
+  logoutUser
 }

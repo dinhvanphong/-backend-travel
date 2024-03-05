@@ -24,9 +24,9 @@ const getListBlog =async () => {
 
 }
 
-const getDetail =async (id) => {
+const getDetail =async (slug) => {
   try {
-    const blogDetail= await blogModel.getDetail(id)
+    const blogDetail= await blogModel.getDetail(slug)
     return blogDetail
   } catch (error) { throw error }
 
@@ -45,9 +45,18 @@ const update =async (id, reqBody) => {
 
 }
 
+const deletedListBlog =async () => {
+  try {
+    const deletedListBlog= await blogModel.deletedListBlog()
+    return deletedListBlog
+  } catch (error) { throw error }
+
+}
+
 export const blogService = {
   newCreate,
   getListBlog,
   getDetail,
-  update
+  update,
+  deletedListBlog
 }

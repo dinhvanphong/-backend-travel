@@ -27,7 +27,7 @@ const getListBlog =async (req, res, next) => {
 const getDetail =async (req, res, next) => {
   try {
     // console.log('body', req.body)
-    const blogDetail = await blogService.getDetail(req.params.id)
+    const blogDetail = await blogService.getDetail(req.params.slug)
     res.status(StatusCodes.OK).json(blogDetail)
   } catch (error) {
     next(error)
@@ -43,9 +43,20 @@ const update =async (req, res, next) => {
     next(error)
   }
 }
+
+const deletedListBlog =async (req, res, next) => {
+  try {
+    // console.log('body', req.body)
+    const deletedListBlog = await blogService.deletedListBlog()
+    res.status(StatusCodes.OK).json(deletedListBlog)
+  } catch (error) {
+    next(error)
+  }
+}
 export const blogController = {
   createNew,
   getListBlog,
   getDetail,
-  update
+  update,
+  deletedListBlog
 }

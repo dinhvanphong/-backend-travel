@@ -1,6 +1,7 @@
 import Joi from 'joi'
 import { ObjectId } from 'mongodb'
 import { GET_DB } from '~/config/mongodb'
+import { commentModel } from '~/models/commentModel'
 // import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
 
@@ -64,13 +65,19 @@ const getListBlog = async () => {
   }
 }
 
-const getDetail = async (id) => {
+const getDetail = async (slug) => {
   try {
     const blogDetail = await GET_DB().collection(BLOG_COLLECTION_NAME).aggregate([
       { $match: {
-        _id: new ObjectId(id),
+        slug: slug,
         _destroy: false
-      } }
+      } },
+      { $lookup: {
+        from: commentModel.COMMENT_COLLECTION_NAME,
+        localField: '_id',
+        foreignField: 'blogId',
+        as: 'comments'
+      }}
     ]).toArray()
     return blogDetail[0] || null
   } catch (error) {
@@ -97,6 +104,20 @@ const update = async (id, updateData) => {
   }
 }
 
+
+const deletedListBlog = async () => {
+  try {
+    const listBlog = await GET_DB().collection(BLOG_COLLECTION_NAME).aggregate([
+      { $match: {
+        _destroy: true
+      } }
+    ]).toArray()
+    return listBlog
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const blogModel = {
   BLOG_COLLECTION_NAME,
   BLOG_COLLECTION_SCHEMA,
@@ -104,5 +125,6 @@ export const blogModel = {
   findOneById,
   getListBlog,
   getDetail,
-  update
+  update,
+  deletedListBlog
 }

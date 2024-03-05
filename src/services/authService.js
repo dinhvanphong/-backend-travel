@@ -129,12 +129,20 @@ const logout =async (req, res) => {
     refreshTokens = refreshTokens.filter((token) => token !== req.cookies.refreshToken)
     res.status(StatusCodes.OK).json('Logged out successfully!')
   } catch (error) { throw error }
+}
 
+const logoutUser =async (req, res) => {
+  try {
+    res.clearCookie('refreshToken')
+    refreshTokens = refreshTokens.filter((token) => token !== req.cookies.refreshToken)
+    res.status(StatusCodes.OK).json('Logged out successfully!')
+  } catch (error) { throw error }
 }
 export const authService = {
   createNew,
   login,
   requestRefreshToken,
   logout,
-  loginUser
+  loginUser,
+  logoutUser
 }

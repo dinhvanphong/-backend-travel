@@ -2,7 +2,7 @@ import express from 'express'
 // import { StatusCodes } from 'http-status-codes'
 import { authValidation } from '~/validations/authValidation'
 import { authController } from '~/controllers/authController'
-import { verifyTokenController } from '~/controllers/verifyToken'
+// import { verifyTokenController } from '~/controllers/verifyToken'
 
 const Router = express.Router()
 
@@ -19,5 +19,7 @@ Router.route('/refresh')
 //   .post(verifyTokenController.verifyToken, authController.logout)
 Router.route('/logout')
   .post(authController.logout)
+Router.route('/logoutUser')
+  .post(authController.logoutUser)
 
 export const authRoute = Router
