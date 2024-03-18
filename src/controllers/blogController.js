@@ -34,6 +34,16 @@ const getDetail =async (req, res, next) => {
   }
 }
 
+const getMienBacBlogs =async (req, res, next) => {
+  try {
+    // console.log('body', req.body)
+    const mienBacBlogs = await blogService.getMienBacBlogs()
+    res.status(StatusCodes.OK).json(mienBacBlogs)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const update =async (req, res, next) => {
   try {
     // console.log('body', req.body)
@@ -58,5 +68,6 @@ export const blogController = {
   getListBlog,
   getDetail,
   update,
-  deletedListBlog
+  deletedListBlog,
+  getMienBacBlogs
 }

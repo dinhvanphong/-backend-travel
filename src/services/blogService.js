@@ -32,6 +32,14 @@ const getDetail =async (slug) => {
 
 }
 
+const getMienBacBlogs =async () => {
+  try {
+    const mienBacBlogs= await blogModel.getMienBacBlogs()
+    return mienBacBlogs
+  } catch (error) { throw error }
+
+}
+
 const update =async (id, reqBody) => {
   try {
     const updateData = {
@@ -58,5 +66,6 @@ export const blogService = {
   getListBlog,
   getDetail,
   update,
-  deletedListBlog
+  deletedListBlog,
+  getMienBacBlogs
 }

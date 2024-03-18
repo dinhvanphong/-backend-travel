@@ -77,9 +77,23 @@ const getDetail = async (slug) => {
         localField: '_id',
         foreignField: 'blogId',
         as: 'comments'
-      }}
+      } }
     ]).toArray()
     return blogDetail[0] || null
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const getMienBacBlogs = async () => {
+  try {
+    const mienBacBlog = await GET_DB().collection(BLOG_COLLECTION_NAME).aggregate([
+      { $match: {
+        zones: 'mien-bac',
+        _destroy: false
+      } }
+    ]).toArray()
+    return mienBacBlog
   } catch (error) {
     throw new Error(error)
   }
@@ -126,5 +140,6 @@ export const blogModel = {
   getListBlog,
   getDetail,
   update,
-  deletedListBlog
+  deletedListBlog,
+  getMienBacBlogs
 }
