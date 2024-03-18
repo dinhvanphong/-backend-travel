@@ -15,6 +15,4 @@ Router.use('/blogs', blogRoute)
 Router.use('/auth', authRoute)
 Router.use('/comment', commentRoute)
 
-
-
 export const APIs_V1 = Router

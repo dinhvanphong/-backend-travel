@@ -1,7 +1,7 @@
 import Joi from 'joi'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
-// import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
 const createNew = async (req, res, next) => {
   const correctCondition = Joi.object({
@@ -9,7 +9,7 @@ const createNew = async (req, res, next) => {
     time: Joi.string().required().min(3).trim().strict(),
     description: Joi.string().required().min(3).trim().strict(),
     note:Joi.string().required().min(3).trim().strict(),
-    zones: Joi.string().valid('Miền Bắc', 'Miền Trung', 'Miền Nam').required(),
+    zones: Joi.string().valid('mien-bac', 'mien-trung', 'mien-nam').required(),
     imgList: Joi.array().items(
       Joi.string()
     )
@@ -53,7 +53,24 @@ const update = async (req, res, next) => {
 
 }
 
+const deleteBlog = async (req, res, next) => {
+  const correctCondition = Joi.object({
+    id: Joi.string().required().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+  })
+
+  try {
+    await correctCondition.validateAsync(req.params)
+    next()
+  } catch (error) {
+    const errorMesage = new Error(error).message
+    const customError = new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, errorMesage)
+    next(customError)
+  }
+
+}
+
 export const blogValidation = {
   createNew,
-  update
+  update,
+  deleteBlog
 }

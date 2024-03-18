@@ -21,7 +21,7 @@ const generateAccessToken = (user) => {
       admin: user.admin
     },
     env.JWT_ACCESS_KEY,
-    { expiresIn: '20s' }
+    { expiresIn: '2000s' }
   )
 }
 

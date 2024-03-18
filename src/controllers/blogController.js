@@ -1,12 +1,10 @@
 
 import { StatusCodes } from 'http-status-codes'
 import { blogService } from '~/services/blogService'
-
 // import ApiError from '~/utils/ApiError'
 
 const createNew =async (req, res, next) => {
   try {
-    // console.log('body', req.body)
     const createdBoard = await blogService.newCreate(req.body)
     res.status(StatusCodes.CREATED).json(createdBoard)
   } catch (error) {
@@ -16,8 +14,16 @@ const createNew =async (req, res, next) => {
 
 const getListBlog =async (req, res, next) => {
   try {
-    // console.log('body', req.body)
     const getListBlog = await blogService.getListBlog()
+    res.status(StatusCodes.OK).json(getListBlog)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getListBlogPagination =async (req, res, next) => {
+  try {
+    const getListBlog = await blogService.getListBlogPagination(req.query.page, req.query.limit)
     res.status(StatusCodes.OK).json(getListBlog)
   } catch (error) {
     next(error)
@@ -26,7 +32,6 @@ const getListBlog =async (req, res, next) => {
 
 const getDetail =async (req, res, next) => {
   try {
-    // console.log('body', req.body)
     const blogDetail = await blogService.getDetail(req.params.slug)
     res.status(StatusCodes.OK).json(blogDetail)
   } catch (error) {
@@ -34,11 +39,55 @@ const getDetail =async (req, res, next) => {
   }
 }
 
+const getMienBacBlogs =async (req, res, next) => {
+  try {
+    const mienBacBlogs = await blogService.getMienBacBlogs()
+    res.status(StatusCodes.OK).json(mienBacBlogs)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getMienTrungBlogs =async (req, res, next) => {
+  try {
+    const mienTrungBlogs = await blogService.getMienTrungBlogs()
+    res.status(StatusCodes.OK).json(mienTrungBlogs)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const getMienNamBlogs =async (req, res, next) => {
+  try {
+    const mienNamBlogs = await blogService.getMienNamBlogs()
+    res.status(StatusCodes.OK).json(mienNamBlogs)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const update =async (req, res, next) => {
   try {
-    // console.log('body', req.body)
-    const blogUpdated = await blogService.update(req.params.id, req.body)
+    const blogUpdated = await blogService.update(req.params.slug, req.body)
     res.status(StatusCodes.OK).json(blogUpdated)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const hiddenBlog =async (req, res, next) => {
+  try {
+    const hiddenBlog = await blogService.hiddenBlog(req.params.id, req.body)
+    res.status(StatusCodes.OK).json(hiddenBlog)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const restoreBlog =async (req, res, next) => {
+  try {
+    const restoreBlog = await blogService.restoreBlog(req.params.id, req.body)
+    res.status(StatusCodes.OK).json(restoreBlog)
   } catch (error) {
     next(error)
   }
@@ -46,9 +95,17 @@ const update =async (req, res, next) => {
 
 const deletedListBlog =async (req, res, next) => {
   try {
-    // console.log('body', req.body)
     const deletedListBlog = await blogService.deletedListBlog()
     res.status(StatusCodes.OK).json(deletedListBlog)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const deleteBlog =async (req, res, next) => {
+  try {
+    const result = await blogService.deleteBlog(req.params.slug)
+    res.status(StatusCodes.OK).json(result)
   } catch (error) {
     next(error)
   }
@@ -56,7 +113,14 @@ const deletedListBlog =async (req, res, next) => {
 export const blogController = {
   createNew,
   getListBlog,
+  getListBlogPagination,
   getDetail,
   update,
-  deletedListBlog
+  hiddenBlog,
+  restoreBlog,
+  deletedListBlog,
+  getMienBacBlogs,
+  getMienNamBlogs,
+  getMienTrungBlogs,
+  deleteBlog
 }
