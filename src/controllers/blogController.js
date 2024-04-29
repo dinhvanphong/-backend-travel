@@ -21,6 +21,17 @@ const getListBlog =async (req, res, next) => {
   }
 }
 
+const getFindBlog =async (req, res, next) => {
+  try {
+    let params = []
+    params.q = req.query.q
+    const getFindBlog = await blogService.getFindBlog(params)
+    res.status(StatusCodes.OK).json(getFindBlog)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const getListBlogPagination =async (req, res, next) => {
   try {
     const getListBlog = await blogService.getListBlogPagination(req.query.page, req.query.limit)
@@ -113,6 +124,7 @@ const deleteBlog =async (req, res, next) => {
 export const blogController = {
   createNew,
   getListBlog,
+  getFindBlog,
   getListBlogPagination,
   getDetail,
   update,

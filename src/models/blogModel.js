@@ -85,6 +85,18 @@ const getListBlog = async () => {
   }
 }
 
+const getFindBlog = async (params) => {
+  try {
+    let objWhere = {}
+    objWhere._destroy = false
+    if (params.q !== '') objWhere.title = new RegExp(params.q, 'i')
+    const listBlog = await GET_DB().collection(BLOG_COLLECTION_NAME).find(objWhere).toArray()
+    return listBlog
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 const getDetail = async (slug) => {
   try {
     const blogDetail = await GET_DB().collection(BLOG_COLLECTION_NAME).aggregate([
@@ -223,6 +235,7 @@ export const blogModel = {
   createNew,
   findOneById,
   getListBlog,
+  getFindBlog,
   getListBlogPagination,
   getDetail,
   update,
