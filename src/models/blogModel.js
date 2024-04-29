@@ -15,8 +15,6 @@ const BLOG_COLLECTION_SCHEMA = Joi.object({
     Joi.string()
   ),
   slug: Joi.string().required().min(3).trim().strict(),
-  // type: Joi.string().valid('public', 'private').required(),
-  // description: Joi.string().required().min(3).max(50).trim().strict(),
 
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
   updatedAt: Joi.date().timestamp('javascript').default(null),
@@ -76,6 +74,23 @@ const getListBlog = async () => {
   try {
     const listBlog = await GET_DB().collection(BLOG_COLLECTION_NAME).aggregate([
       { $match: {
+        _destroy: false
+      } }
+    ]).toArray()
+    return listBlog
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+
+const getFindBlog = async (params) => {
+  try {
+    let objWhere = {}
+    if (params.q !== '') objWhere.title = new RegExp(params.q, 'i')
+    const listBlog = await GET_DB().collection(BLOG_COLLECTION_NAME).aggregate([
+      { $match: {
+        title: objWhere.title,
         _destroy: false
       } }
     ]).toArray()
@@ -223,6 +238,7 @@ export const blogModel = {
   createNew,
   findOneById,
   getListBlog,
+  getFindBlog,
   getListBlogPagination,
   getDetail,
   update,

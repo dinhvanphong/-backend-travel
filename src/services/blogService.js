@@ -26,8 +26,15 @@ const getListBlog =async () => {
 
 }
 
-const getListBlogPagination =async (page, limit) => {
+const getFindBlog =async (params) => {
+  try {
+    const listBlog= await blogModel.getFindBlog(params)
+    return listBlog
+  } catch (error) { throw error }
 
+}
+
+const getListBlogPagination =async (page, limit) => {
   try {
     const listBlog= await blogModel.getListBlogPagination(page, limit)
     return listBlog
@@ -127,6 +134,7 @@ const deleteBlog =async (id) => {
 export const blogService = {
   newCreate,
   getListBlog,
+  getFindBlog,
   getListBlogPagination,
   getDetail,
   update,
