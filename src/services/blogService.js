@@ -70,7 +70,6 @@ const getMienNamBlogs =async () => {
     const mienNamBlogs= await blogModel.getMienNamBlogs()
     return mienNamBlogs
   } catch (error) { throw error }
-
 }
 
 const update =async (id, reqBody) => {
@@ -123,12 +122,7 @@ const deleteBlog =async (id) => {
     if (!targetColumn) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Column not found!')
     }
-    // await columnModel.deleteOneById(columnId)
-    // await cardModel.deleteManyByColumnId(columnId)
-    // await boardModel.pullColumnOrderIds(targetColumn)
-    // return { deleteResult: 'Column and its Cards deleted' }
   } catch (error) { throw error }
-
 }
 
 export const blogService = {
